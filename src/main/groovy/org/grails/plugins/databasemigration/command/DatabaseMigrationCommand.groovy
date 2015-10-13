@@ -103,7 +103,11 @@ trait DatabaseMigrationCommand {
         return new File(changeLogLocation, "${filename}.groovy")
     }
 
-    Map<String, String> getDataSourceConfig(ConfigMap config = this.config) {
+    Map<String, String> getDataSourceConfig() {
+        getDataSourceConfig(this.config)
+    }
+
+    Map<String, String> getDataSourceConfig(ConfigMap config) {
         def dataSourceName = dataSource ?: 'dataSource'
         def dataSources = config.getProperty('dataSources', Map) ?: [:]
         if (!dataSources) {
@@ -115,7 +119,8 @@ trait DatabaseMigrationCommand {
         return (Map<String, String>) dataSources.get(dataSourceName)
     }
 
-    void withFileOrSystemOutWriter(String filename, @ClosureParams(value = SimpleType, options = "java.io.Writer") Closure closure) {
+    void withFileOrSystemOutWriter(String filename,
+                                   @ClosureParams(value = SimpleType, options = "java.io.Writer") Closure closure) {
         if (!filename) {
             closure.call(new PrintWriter(System.out))
             return
@@ -125,7 +130,7 @@ trait DatabaseMigrationCommand {
         if (outputFile.parentFile && !outputFile.parentFile.exists()) {
             outputFile.parentFile.mkdirs()
         }
-        outputFile.withWriter { Writer writer ->
+        outputFile.withWriter {BufferedWriter writer ->
             closure.call(writer)
         }
     }
@@ -146,7 +151,7 @@ trait DatabaseMigrationCommand {
         Path changeLogFilePath = changeLogFile.toPath()
         String relativePath = changeLogLocationPath.relativize(changeLogFilePath).toString()
 
-        withDatabase { Database database ->
+        withDatabase {Database database ->
             def liquibase = new Liquibase(relativePath, resourceAccessor, database)
             closure.call(liquibase)
         }
@@ -156,7 +161,13 @@ trait DatabaseMigrationCommand {
         new FileSystemResourceAccessor(changeLogLocation.path)
     }
 
-    void withDatabase(Map<String, String> dataSourceConfig = null, @ClosureParams(value = SimpleType, options = 'liquibase.database.Database') Closure closure) {
+
+    void withDatabase(@ClosureParams(value = SimpleType, options = 'liquibase.database.Database') Closure closure) {
+        withDatabase(null, closure)
+    }
+
+    void withDatabase(Map<String, String> dataSourceConfig, @ClosureParams(value = SimpleType,
+            options = 'liquibase.database.Database') Closure closure) {
         def database = null
         try {
             database = createDatabase(defaultSchema, dataSource, dataSourceConfig ?: getDataSourceConfig())
@@ -218,7 +229,8 @@ trait DatabaseMigrationCommand {
         def compareControl = new CompareControl([] as CompareControl.SchemaComparison[], null as String)
 
         def command = new GroovyDiffToChangeLogCommand()
-        command.setReferenceDatabase(referenceDatabase).setTargetDatabase(targetDatabase).setCompareControl(compareControl).setOutputStream(System.out)
+        command.setReferenceDatabase(referenceDatabase).setTargetDatabase(targetDatabase).setCompareControl(compareControl).
+                setOutputStream(System.out)
         command.setChangeLogFile(changeLogFilePath).setDiffOutputControl(createDiffOutputControl())
 
         try {
@@ -237,10 +249,12 @@ trait DatabaseMigrationCommand {
             throw new DatabaseMigrationException("Cannot specify both excludeObjects and includeObjects")
         }
         if (excludeObjects) {
-            diffOutputControl.objectChangeFilter = new StandardObjectChangeFilter(StandardObjectChangeFilter.FilterType.EXCLUDE, excludeObjects)
+            diffOutputControl.objectChangeFilter =
+                    new StandardObjectChangeFilter(StandardObjectChangeFilter.FilterType.EXCLUDE, excludeObjects)
         }
         if (includeObjects) {
-            diffOutputControl.objectChangeFilter = new StandardObjectChangeFilter(StandardObjectChangeFilter.FilterType.INCLUDE, includeObjects)
+            diffOutputControl.objectChangeFilter =
+                    new StandardObjectChangeFilter(StandardObjectChangeFilter.FilterType.INCLUDE, includeObjects)
         }
 
         diffOutputControl
