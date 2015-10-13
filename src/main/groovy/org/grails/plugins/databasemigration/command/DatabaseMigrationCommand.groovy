@@ -228,9 +228,11 @@ trait DatabaseMigrationCommand {
         def changeLogFilePath = changeLogFile?.path
         def compareControl = new CompareControl([] as CompareControl.SchemaComparison[], null as String)
 
+        Boolean ignoreDefaultValues = config.getProperty("${configPrefix}.ignoreDefaultValues",Boolean)
+
         def command = new GroovyDiffToChangeLogCommand()
-        command.setReferenceDatabase(referenceDatabase).setTargetDatabase(targetDatabase).setCompareControl(compareControl).
-                setOutputStream(System.out)
+        command.setIgnoreDefaultValues(ignoreDefaultValues).setReferenceDatabase(referenceDatabase)
+                .setTargetDatabase(targetDatabase).setCompareControl(compareControl).setOutputStream(System.out)
         command.setChangeLogFile(changeLogFilePath).setDiffOutputControl(createDiffOutputControl())
 
         try {

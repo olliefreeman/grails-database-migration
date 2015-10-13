@@ -19,6 +19,7 @@ grails.plugin.databasemigration. excludeObjects | none | Comma separated list of
 grails.plugin.databasemigration. databaseChangeLogTableName | 'databasechangelog' | the Liquibase changelog record table name
 grails.plugin.databasemigration. databaseChangeLogLockTableName | 'databasechangeloglock' | the Liquibase lock table name
 grails.plugin.databasemigration. loadPluginMigrations | @false@ | if @true@, load migrations from the classpath (i.e. plugin migrations) using @GrailsClassLoaderResourceAccessor@ instead of @FileSystemResourceAccessor@ (War deployed mode always uses @GrailsClassLoaderResourceAccessor@)
+grails.plugin.databasemigration.ignoreDefaultValues | @false@ | if @true@, @dbm-gorm-diff@ will not render @addDefaultValue@ elements
 {table}
 
 {note}
