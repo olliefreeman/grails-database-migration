@@ -16,6 +16,7 @@
 package org.grails.plugins.databasemigration.command
 
 import groovy.transform.CompileStatic
+import liquibase.changelog.ChangeLogChild
 import liquibase.serializer.ChangeLogSerializerFactory
 import org.grails.plugins.databasemigration.DatabaseMigrationException
 
@@ -43,8 +44,10 @@ class DbmCreateChangelog implements ScriptDatabaseMigrationCommand {
 
         def serializer = ChangeLogSerializerFactory.instance.getSerializer(filename)
 
+        List<ChangeLogChild> list = []
+
         outputChangeLogFile.withOutputStream { OutputStream out ->
-            serializer.write([], out)
+            serializer.write(list, out)
         }
 
         if (hasOption('add')) {

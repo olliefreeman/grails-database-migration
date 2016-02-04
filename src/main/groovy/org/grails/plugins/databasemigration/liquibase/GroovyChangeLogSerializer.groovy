@@ -16,6 +16,7 @@
 package org.grails.plugins.databasemigration.liquibase
 
 import groovy.transform.CompileStatic
+import liquibase.changelog.ChangeLogChild
 import liquibase.changelog.ChangeSet
 import liquibase.serializer.ChangeLogSerializer
 import liquibase.serializer.LiquibaseSerializable
@@ -26,11 +27,12 @@ class GroovyChangeLogSerializer implements ChangeLogSerializer {
 
     private XMLChangeLogSerializer xmlChangeLogSerializer = new XMLChangeLogSerializer()
 
+    // Upgrade to 3.4.2
     @Override
-    void write(List<ChangeSet> changeSets, OutputStream out) throws IOException {
-        def xmlOutputStrem = new ByteArrayOutputStream()
-        xmlChangeLogSerializer.write(changeSets, xmlOutputStrem)
-        out << ChangelogXml2Groovy.convert(xmlOutputStrem.toString())
+    def <T extends ChangeLogChild> void write(List<T> children, OutputStream out) throws IOException {
+        def xmlOutputStream = new ByteArrayOutputStream()
+        xmlChangeLogSerializer.write(children, xmlOutputStream)
+        out << ChangelogXml2Groovy.convert(xmlOutputStream.toString())
     }
 
     @Override
@@ -46,5 +48,10 @@ class GroovyChangeLogSerializer implements ChangeLogSerializer {
     @Override
     String serialize(LiquibaseSerializable object, boolean pretty) {
         throw new UnsupportedOperationException()
+    }
+
+    @Override
+    int getPriority() {
+        1
     }
 }

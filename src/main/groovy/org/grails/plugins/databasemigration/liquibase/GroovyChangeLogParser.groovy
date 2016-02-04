@@ -26,10 +26,14 @@ import liquibase.parser.core.xml.AbstractChangeLogParser
 import liquibase.resource.ResourceAccessor
 import liquibase.util.StreamUtil
 import org.codehaus.groovy.control.CompilerConfiguration
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 
 @CompileStatic
 class GroovyChangeLogParser extends AbstractChangeLogParser {
+
+    final static Logger logger = LoggerFactory.getLogger(GroovyChangeLogParser)
 
     final int priority = PRIORITY_DEFAULT
 
@@ -81,18 +85,18 @@ class GroovyChangeLogParser extends AbstractChangeLogParser {
     }
 
     @CompileDynamic
-    protected void setChangeLogProperties(Map changeLogProperties, ChangeLogParameters changeLogParameters) {
+    protected void setChangeLogProperties(Map<String, Object> changeLogProperties, ChangeLogParameters changeLogParameters) {
         changeLogProperties.each { name, value ->
-            String contexts = null
-            String labels = null
-            String databases = null
             if (value instanceof Map) {
-                contexts = value.contexts
-                labels = value.labels
-                databases = value.databases
-                value = value.value
+                logger.warn('Map of properties found')
+                changeLogParameters.set(name, value.value as String, value.contexts as String, value.labels as String,
+                                        value.databases as String, true, null)
             }
-            changeLogParameters.set(name as String, value as String, contexts as String, labels, databases)
+            else {
+                changeLogParameters.set(name, value)
+            }
+
+
         }
     }
 }

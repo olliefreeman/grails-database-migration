@@ -8,7 +8,8 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "org.grails.plugins:hibernate:$hibernatePluginVersion"
+        classpath "org.grails.plugins:hibernate4:$gormVersion"
+        classpath "org.hibernate:hibernate-core:$hibernateVersion"
     }
 }
 
@@ -18,7 +19,7 @@ plugins {
     id 'project-report'
 }
 
-version "2.0.1"
+version "2.0.3"
 group "org.grails.plugins"
 
 apply plugin: "spring-boot"
@@ -36,8 +37,8 @@ ext {
     gradleWrapperVersion = project.gradleWrapperVersion
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenLocal()
@@ -53,15 +54,15 @@ dependencyManagement {
 }
 
 dependencies {
-    compile 'org.liquibase:liquibase-core:3.3.5'
+    compile 'org.liquibase:liquibase-core:3.4.2'
     compile('org.liquibase.ext:liquibase-hibernate4:3.5') {
         exclude group: 'org.hibernate', module: 'hibernate-core'
         exclude group: 'org.hibernate.javax.persistence', module: 'hibernate-jpa-2.0-api'
         exclude group: 'org.hibernate', module: 'hibernate-entitymanager'
         exclude group: 'org.hibernate', module: 'hibernate-envers'
     }
-    provided "org.hibernate:hibernate-core:$hibernateVersion"
-    provided "org.grails.plugins:hibernate"
+    compile "org.grails.plugins:hibernate4:$gormVersion"
+    compile "org.hibernate:hibernate-core:$hibernateVersion"
 
     provided 'org.springframework.boot:spring-boot-starter-logging'
     provided "org.springframework.boot:spring-boot-starter-actuator"
@@ -73,7 +74,6 @@ dependencies {
     provided 'javax.servlet:javax.servlet-api:3.1.0'
 
     testCompile "org.grails:grails-plugin-testing"
-    testCompile "org.grails.plugins:hibernate"
 
     provided("org.grails:grails-shell") {
         exclude group: 'org.slf4j', module: 'slf4j-simple'

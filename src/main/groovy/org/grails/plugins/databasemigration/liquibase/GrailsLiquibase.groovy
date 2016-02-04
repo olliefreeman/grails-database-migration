@@ -22,7 +22,6 @@ import liquibase.exception.DatabaseException
 import liquibase.exception.LiquibaseException
 import liquibase.integration.spring.SpringLiquibase
 import liquibase.resource.ClassLoaderResourceAccessor
-import liquibase.resource.CompositeResourceAccessor
 import org.springframework.context.ApplicationContext
 
 import java.sql.Connection
@@ -57,9 +56,10 @@ class GrailsLiquibase extends SpringLiquibase {
         return liquibase
     }
 
-    @Override
+    // @Override // No Longer overrides, as super takes a resource accessor for offline connections
     protected Database createDatabase(Connection connection) throws DatabaseException {
-        Database database = super.createDatabase(connection)
+        Database database = super.createDatabase(connection, null)
+        // ResourceAccessor
 
         if (databaseChangeLogTableName) {
             database.databaseChangeLogTableName = databaseChangeLogTableName
