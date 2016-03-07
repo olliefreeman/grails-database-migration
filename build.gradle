@@ -61,8 +61,8 @@ dependencies {
         exclude group: 'org.hibernate', module: 'hibernate-entitymanager'
         exclude group: 'org.hibernate', module: 'hibernate-envers'
     }
-    compile "org.grails.plugins:hibernate4:$gormVersion"
-    compile "org.hibernate:hibernate-core:$hibernateVersion"
+    provided "org.grails.plugins:hibernate4:$gormVersion"
+    provided "org.hibernate:hibernate-core:$hibernateVersion"
 
     provided 'org.springframework.boot:spring-boot-starter-logging'
     provided "org.springframework.boot:spring-boot-starter-actuator"
