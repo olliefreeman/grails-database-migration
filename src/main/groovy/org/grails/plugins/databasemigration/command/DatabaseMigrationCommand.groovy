@@ -170,7 +170,12 @@ trait DatabaseMigrationCommand {
             options = 'liquibase.database.Database') Closure closure) {
         def database = null
         try {
-            database = createDatabase(defaultSchema, dataSource, dataSourceConfig ?: getDataSourceConfig())
+
+            Map<String, String> dbDataSourceConfig = dataSourceConfig ?: getDataSourceConfig()
+
+            if (!dbDataSourceConfig) throw new LiquibaseException("No datasource config available for ${dataSource ?: 'dataSource'}")
+
+            database = createDatabase(defaultSchema, dataSource, dbDataSourceConfig)
             closure.call(database)
         } finally {
             database?.close()
