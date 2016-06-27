@@ -19,7 +19,7 @@ plugins {
     id 'project-report'
 }
 
-version "2.0.3"
+version "2.0.4"
 group "org.grails.plugins"
 
 apply plugin: "spring-boot"
