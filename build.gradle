@@ -4,7 +4,7 @@ buildscript {
     }
     repositories {
         mavenLocal()
-        maven { url "https://repo.grails.org/grails/core" }
+        maven {url "https://repo.grails.org/grails/core"}
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
@@ -20,11 +20,11 @@ plugins {
     id 'project-report'
 }
 
-apply plugin:"eclipse"
-apply plugin:"idea"
-apply plugin:"org.grails.grails-plugin"
-apply plugin:"org.grails.grails-plugin-publish"
-apply plugin:"org.grails.grails-gsp"
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "org.grails.grails-plugin"
+apply plugin: "org.grails.grails-plugin-publish"
+apply plugin: "org.grails.grails-gsp"
 apply plugin: 'com.jfrog.bintray'
 
 version "2.0.5"
@@ -41,7 +41,7 @@ targetCompatibility = 1.7
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "https://repo.grails.org/grails/core" }
+    maven {url "https://repo.grails.org/grails/core"}
 }
 
 dependencyManagement {
@@ -86,15 +86,18 @@ dependencies {
     documentation "org.codehaus.groovy:groovy-all:2.4.6"
 }
 
+
 grailsPublish {
-    userOrg = "grails"
-    githubSlug = 'grails-plugins/grails-database-migration'
+    userOrg = "olliefreeman"
+    githubSlug = 'olliefreeman/grails-database-migration'
     license {
         name = 'Apache-2.0'
     }
     title = "Grails Database Migration Plugin"
     desc = "Grails Database Migration Plugin"
-    developers = [kazukiyamamoto: "Kazuki YAMAMOTO"]
+    developers = [kazukiyamamoto: "Kazuki YAMAMOTO",
+                  olliefreeman  : "Ollie Freeman"]
+    repo = 'maven'
 }
 
 asciidoctor {
@@ -103,14 +106,14 @@ asciidoctor {
         into "./images"
     }
 
-    attributes 'experimental'  : 'true',
-            'compat-mode'   : 'true',
-            'toc'           : 'left',
-            'icons'         : 'font',
-            'version'       : project.version,
-            'groupId'       : project.group,
-            'artifactId'    : project.name,
-            'sourcedir'     : "${projectDir}/src/main/groovy"
+    attributes 'experimental': 'true',
+               'compat-mode': 'true',
+               'toc': 'left',
+               'icons': 'font',
+               'version': project.version,
+               'groupId': project.group,
+               'artifactId': project.name,
+               'sourcedir': "${projectDir}/src/main/groovy"
 }
 
 task apidocs(type: Groovydoc) {
@@ -124,7 +127,7 @@ task apidocs(type: Groovydoc) {
     groovyClasspath = configurations.documentation
 }
 
-task docs(type:Copy, dependsOn:[apidocs, asciidoctor])  {
+task docs(type: Copy, dependsOn: [apidocs, asciidoctor]) {
     from "$buildDir/asciidoc/html5"
     into "$buildDir/docs"
 }
@@ -152,30 +155,6 @@ task groovydocJar(type: Jar, dependsOn: groovydoc) {
 artifacts {
     archives sourcesJar
     archives groovydocJar
-}
-
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    pkg {
-        repo = 'maven'
-        name = "grails-$project.name"
-        userOrg = 'olliefreeman'
-        licenses = ['Apache-2.0']
-        websiteUrl = 'https://github.com/olliefreeman/grails-database-migration'
-        vcsUrl = 'https://github.com/olliefreeman/grails-database-migration.git'
-        githubRepo = 'olliefreeman/grails-database-migration'
-        githubReleaseNotesFile = 'README.md'
-        version {
-            name = project.version
-            desc = "grails-database-migration - ${project.name} ${project.version}"
-            released = new Date()
-            vcsTag = "${project.version}"
-        }
-    }
-    configurations = ['archives']
-    dryRun = false //Whether to run this as dry-run, without deploying
-    publish = true //If version should be auto published after an upload
 }
 
 task wrapper(type: Wrapper) {
