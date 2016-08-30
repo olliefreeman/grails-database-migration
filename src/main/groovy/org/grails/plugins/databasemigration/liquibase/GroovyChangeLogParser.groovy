@@ -87,16 +87,16 @@ class GroovyChangeLogParser extends AbstractChangeLogParser {
     @CompileDynamic
     protected void setChangeLogProperties(Map<String, Object> changeLogProperties, ChangeLogParameters changeLogParameters) {
         changeLogProperties.each { name, value ->
+            String contexts = null
+            String labels = null
+            String databases = null
             if (value instanceof Map) {
-                logger.warn('Map of properties found')
-                changeLogParameters.set(name, value.value as String, value.contexts as String, value.labels as String,
-                                        value.databases as String, true, null)
+                contexts = value.contexts
+                labels = value.labels
+                databases = value.databases
+                value = value.value
             }
-            else {
-                changeLogParameters.set(name, value)
-            }
-
-
+            changeLogParameters.set(name as String, value as String, contexts as String, labels, databases, true, null)
         }
     }
 }

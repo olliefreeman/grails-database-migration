@@ -29,10 +29,10 @@ class GroovyChangeLogSerializer implements ChangeLogSerializer {
 
     // Upgrade to 3.4.2
     @Override
-    def <T extends ChangeLogChild> void write(List<T> children, OutputStream out) throws IOException {
-        def xmlOutputStream = new ByteArrayOutputStream()
-        xmlChangeLogSerializer.write(children, xmlOutputStream)
-        out << ChangelogXml2Groovy.convert(xmlOutputStream.toString())
+    def <T extends ChangeLogChild> void write(List<T> changesets, OutputStream out) throws IOException {
+        def xmlOutputStrem = new ByteArrayOutputStream()
+        xmlChangeLogSerializer.write(changesets, xmlOutputStrem)
+        out << ChangelogXml2Groovy.convert(xmlOutputStrem.toString())
     }
 
     @Override
@@ -52,6 +52,6 @@ class GroovyChangeLogSerializer implements ChangeLogSerializer {
 
     @Override
     int getPriority() {
-        1
+        return 0
     }
 }

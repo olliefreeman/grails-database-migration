@@ -4,6 +4,7 @@ import grails.core.GrailsApplication
 import liquibase.exception.ValidationFailedException
 import org.grails.plugins.databasemigration.command.*
 
+
 class GroovyChangeLogSpec extends ApplicationContextDatabaseMigrationCommandSpec {
 
     static List<String> calledBlocks
@@ -38,12 +39,13 @@ databaseChangeLog = {
             outputCapture.toString().contains('confirmation message')
     }
 
+
     def "outputs a warning message by calling the warn method"() {
         given:
             def command = createCommand(DbmUpdateCommand)
             command.changeLogFile << """
 databaseChangeLog = {
-    changeSet(author: "John Smith", id: "1") {
+    changeSet(author: "John Smith", id: "2") {
         grailsChange {
             validate {
                 ${GroovyChangeLogSpec.name}.calledBlocks << 'validate'
@@ -63,6 +65,8 @@ databaseChangeLog = {
             outputCapture.toString().contains('warn message')
             calledBlocks == ['validate', 'change']
     }
+
+
 
     def "stops processing by calling the error method"() {
         given:
@@ -87,21 +91,23 @@ databaseChangeLog = {
 
         then:
             def e = thrown(ValidationFailedException)
+
             e.message.contains('1 changes have validation failures')
             e.message.contains('error message, changelog.groovy::1::John Smith')
             calledBlocks == ['validate']
     }
+
 
     def "can use bind variables in the change block"() {
         given:
             def command = createCommand(DbmUpdateCommand)
             command.changeLogFile << """
 databaseChangeLog = {
-    changeSet(author: "John Smith", id: "1") {
+    changeSet(author: "John Smith", id: "4") {
         grailsChange {
             change {
-                assert changeSet.id == '1'
-                assert resourceAccessor.toString() == 'liquibase.resource.FileSystemResourceAccessor(${changeLogLocation.canonicalPath})'
+                assert changeSet.id == '4'
+                assert resourceAccessor.toString() == 'liquibase.resource.FileSystemResourceAccessor(${changeLogLocation.canonicalPath.replace('\\', '\\\\')})'
                 assert ctx.hashCode() == ${applicationContext.hashCode()}
                 assert application.hashCode() == ${applicationContext.getBean(GrailsApplication).hashCode()}
                 ${GroovyChangeLogSpec.name}.calledBlocks << 'change'
@@ -117,6 +123,7 @@ databaseChangeLog = {
             calledBlocks == ['change']
     }
 
+
     def "executes sql statements in the change block"() {
         given:
             def command = createCommand(DbmUpdateCommand)
@@ -125,7 +132,7 @@ import groovy.sql.Sql
 import liquibase.statement.core.InsertStatement
 
 databaseChangeLog = {
-    changeSet(author: "John Smith", id: "1") {
+    changeSet(author: "John Smith", id: "5") {
         grailsChange {
             change {
                 new Sql(database.connection.underlyingConnection).executeUpdate('CREATE TABLE book (id INT)')
@@ -146,14 +153,15 @@ databaseChangeLog = {
             sql.rows('SELECT id FROM book').collect { it.id } as Set == [1, 2, 3, 4, 5] as Set
     }
 
+    
     def "rolls back a database with Groovy Change"() {
         given:
             def command = createCommand(DbmRollbackCommand)
             command.changeLogFile << """
 databaseChangeLog = {
-    changeSet(author: "John Smith", id: "1") {
+    changeSet(author: "John Smith", id: "6") {
     }
-    changeSet(author: "John Smith", id: "2") {
+    changeSet(author: "John Smith", id: "7") {
         grailsChange {
             init { ${GroovyChangeLogSpec.name}.calledBlocks << 'init' }
             validate { ${GroovyChangeLogSpec.name}.calledBlocks << 'validate' }
@@ -177,18 +185,19 @@ databaseChangeLog = {
             calledBlocks == ['init', 'rollback']
     }
 
+    
     def "can use bind variables in the rollback block"() {
         given:
             def command = createCommand(DbmRollbackCommand)
             command.changeLogFile << """
 databaseChangeLog = {
-    changeSet(author: "John Smith", id: "1") {
+    changeSet(author: "John Smith", id: "8") {
     }
-    changeSet(author: "John Smith", id: "2") {
+    changeSet(author: "John Smith", id: "9") {
         grailsChange {
             rollback {
-                assert changeSet.id == '2'
-                assert resourceAccessor.toString() == 'liquibase.resource.FileSystemResourceAccessor(${changeLogLocation.canonicalPath})'
+                assert changeSet.id == '9'
+                assert resourceAccessor.toString() == 'liquibase.resource.FileSystemResourceAccessor(${changeLogLocation.canonicalPath.replace('\\', '\\\\')})'
                 assert ctx.hashCode() == ${applicationContext.hashCode()}
                 assert application.hashCode() == ${applicationContext.getBean(GrailsApplication).hashCode()}
                 ${GroovyChangeLogSpec.name}.calledBlocks << 'rollback'

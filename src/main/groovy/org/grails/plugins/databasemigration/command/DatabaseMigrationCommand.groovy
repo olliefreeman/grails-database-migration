@@ -130,7 +130,7 @@ trait DatabaseMigrationCommand {
         if (outputFile.parentFile && !outputFile.parentFile.exists()) {
             outputFile.parentFile.mkdirs()
         }
-        outputFile.withWriter {BufferedWriter writer ->
+        outputFile.withWriter { BufferedWriter writer ->
             closure.call(writer)
         }
     }
