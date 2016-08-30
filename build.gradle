@@ -25,7 +25,6 @@ apply plugin:"idea"
 apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.grails-plugin-publish"
 apply plugin:"org.grails.grails-gsp"
-apply plugin: 'maven'
 apply plugin: 'com.jfrog.bintray'
 
 version "2.0.5"
@@ -86,7 +85,7 @@ dependencies {
 
     documentation "org.codehaus.groovy:groovy-all:2.4.6"
 }
-/*
+
 grailsPublish {
     userOrg = "grails"
     githubSlug = 'grails-plugins/grails-database-migration'
@@ -97,7 +96,7 @@ grailsPublish {
     desc = "Grails Database Migration Plugin"
     developers = [kazukiyamamoto: "Kazuki YAMAMOTO"]
 }
-*/
+
 asciidoctor {
     resources {
         from('src/docs/images')
