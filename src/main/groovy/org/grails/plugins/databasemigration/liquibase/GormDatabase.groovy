@@ -19,44 +19,53 @@ import groovy.transform.CompileStatic
 import liquibase.database.DatabaseConnection
 import liquibase.exception.DatabaseException
 import liquibase.ext.hibernate.database.HibernateDatabase
-import liquibase.ext.hibernate.database.connection.HibernateConnection
-import org.hibernate.cfg.Configuration
+import org.hibernate.boot.Metadata
+import org.hibernate.boot.MetadataSources
+import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder
 import org.hibernate.dialect.Dialect
+import org.hibernate.service.ServiceRegistry
 
 @CompileStatic
 class GormDatabase extends HibernateDatabase {
 
-    final String DefaultDatabaseProductName = 'getDefaultDatabaseProductName'
     final String shortName = 'GORM'
+    final String DefaultDatabaseProductName = 'getDefaultDatabaseProductName'
 
-    private Configuration configuration
     private Dialect dialect
+    private Metadata metadata
 
-    GormDatabase() {
-    }
-
-    GormDatabase(Configuration configuration, Dialect dialect) {
-        this.configuration = configuration
+    GormDatabase(Dialect dialect, ServiceRegistry serviceRegistry) {
         this.dialect = dialect
+        this.metadata = new MetadataSources(serviceRegistry).getMetadataBuilder().build();
     }
 
     @Override
-    Configuration getConfiguration() throws DatabaseException {
-        configuration
-    }
-
-    @Override
-    Dialect getDialect() throws DatabaseException {
+    public Dialect getDialect() {
         dialect
     }
 
+    /**
+     * Return the hibernate {@link Metadata} used by this database.
+     */
     @Override
-    protected Configuration buildConfiguration(HibernateConnection conn) throws DatabaseException {
-        throw new UnsupportedOperationException()
+    public Metadata getMetadata() {
+        metadata
     }
 
     @Override
-    boolean isCorrectDatabaseImplementation(DatabaseConnection conn) throws DatabaseException {
-        false
+    protected void configureSources(MetadataSources sources) throws DatabaseException {
+        //no op
     }
+
+
+    @Override
+    boolean isCorrectDatabaseImplementation(DatabaseConnection conn) throws DatabaseException {
+        return false
+    }
+
 }
+
+
+
+
+
