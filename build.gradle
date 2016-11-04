@@ -27,7 +27,7 @@ apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: 'com.jfrog.bintray'
 
-version "2.0.5"
+version "3.0.0-SNAPSHOT"
 group "org.grails.plugins"
 
 ext {
