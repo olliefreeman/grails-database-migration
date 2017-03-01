@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:+"
     }
 }
 
@@ -18,10 +19,12 @@ plugins {
 apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
-apply plugin: "org.grails.grails-plugin-publish"
+//apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: "org.grails.grails-gsp"
+apply plugin: 'maven'
+apply plugin: "com.jfrog.artifactory"
 
-version "3.0.0"
+version "3.0.1-obi"
 group "org.grails.plugins"
 
 ext {
@@ -79,7 +82,7 @@ dependencies {
     documentation "org.codehaus.groovy:groovy-all:2.4.7"
 }
 
-
+/*
 grailsPublish {
     userOrg = "olliefreeman"
     githubSlug = 'olliefreeman/grails-database-migration'
@@ -92,7 +95,7 @@ grailsPublish {
                   olliefreeman  : "Ollie Freeman"]
     repo = 'maven'
 }
-
+*/
 asciidoctor {
     resources {
         from('src/docs/images')
@@ -127,3 +130,30 @@ task docs(type: Copy, dependsOn: [apidocs, asciidoctor]) {
 }
 
 configurations.testCompile.extendsFrom(configurations.compileOnly)
+
+tasks.artifactoryPublish.dependsOn 'install'
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"
+    publish {
+        repository {
+            repoKey = project.version.endsWith('SNAPSHOT') ? 'plugins-snapshot-local' : 'plugins-release-local'
+            maven = true
+
+            // The variables for these credentials should be saved in ~/.gradle/gradle.properties
+            username = "${artifactory_user}"
+            password = "${artifactory_apiKey}"
+        }
+
+        defaults {
+            publishConfigs('archives')
+            publishPom = true
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-releases'
+            maven = true
+        }
+    }
+}

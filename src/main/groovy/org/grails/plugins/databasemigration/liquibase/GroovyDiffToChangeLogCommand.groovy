@@ -140,7 +140,7 @@ class GroovyDiffToChangeLogCommand extends DiffToChangeLogCommand {
     }
 
     static Collection<Table> findTables(HibernateDatabase hibernateDatabase, String tableName) {
-        hibernateDatabase.configuration.tableMappings.findAll {Table finder ->
+        hibernateDatabase.metadata.collectTableMappings().findAll {Table finder ->
             finder.name == tableName
         }
     }
