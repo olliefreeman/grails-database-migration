@@ -128,6 +128,7 @@ class GroovyDiffToChangeLogCommand extends DiffToChangeLogCommand {
                         remove += dbObject.outgoingForeignKeys
                         remove += dbObject.primaryKey
                         remove += dbObject.columns
+                        remove += dbObject.indexes
                     }
 
                 }
