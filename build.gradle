@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:+"
     }
 }
 
@@ -20,8 +21,9 @@ apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: "org.grails.grails-gsp"
+apply plugin: "com.jfrog.artifactory"
 
-version "3.0.1-SNAPSHOT"
+version "3.0.1-obi-SNAPSHOT"
 group "org.grails.plugins"
 
 ext {
@@ -127,3 +129,27 @@ task docs(type: Copy, dependsOn: [apidocs, asciidoctor]) {
 }
 
 configurations.testCompile.extendsFrom(configurations.compileOnly)
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"
+    publish {
+        repository {
+            repoKey = project.version.endsWith('SNAPSHOT') ? 'plugins-snapshot-local' : 'plugins-release-local'
+            maven = true
+
+            // The variables for these credentials should be saved in ~/.gradle/gradle.properties
+            username = "${artifactory_user}"
+            password = "${artifactory_apiKey}"
+        }
+
+        defaults {
+            publishConfigs('archives')
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-releases'
+            maven = true
+        }
+    }
+}
