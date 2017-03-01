@@ -19,8 +19,9 @@ plugins {
 apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
-apply plugin: "org.grails.grails-plugin-publish"
+//apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: "org.grails.grails-gsp"
+apply plugin: 'maven'
 apply plugin: "com.jfrog.artifactory"
 
 version "3.0.1-obi-SNAPSHOT"
@@ -81,7 +82,7 @@ dependencies {
     documentation "org.codehaus.groovy:groovy-all:2.4.7"
 }
 
-
+/*
 grailsPublish {
     userOrg = "olliefreeman"
     githubSlug = 'olliefreeman/grails-database-migration'
@@ -94,7 +95,7 @@ grailsPublish {
                   olliefreeman  : "Ollie Freeman"]
     repo = 'maven'
 }
-
+*/
 asciidoctor {
     resources {
         from('src/docs/images')
@@ -130,6 +131,8 @@ task docs(type: Copy, dependsOn: [apidocs, asciidoctor]) {
 
 configurations.testCompile.extendsFrom(configurations.compileOnly)
 
+tasks.artifactoryPublish.dependsOn 'install'
+
 artifactory {
     contextUrl = "${artifactory_contextUrl}"
     publish {
@@ -144,6 +147,7 @@ artifactory {
 
         defaults {
             publishConfigs('archives')
+            publishPom = true
         }
     }
     resolve {
