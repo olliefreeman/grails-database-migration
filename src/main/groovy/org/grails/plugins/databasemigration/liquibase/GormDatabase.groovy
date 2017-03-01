@@ -34,7 +34,12 @@ class GormDatabase extends HibernateDatabase {
     private Dialect dialect
     private Metadata metadata
 
+    GormDatabase(){
+        super()
+    }
+
     GormDatabase(Dialect dialect, ServiceRegistry serviceRegistry) {
+        this()
         this.dialect = dialect
         this.metadata = new MetadataSources(serviceRegistry).getMetadataBuilder().build();
     }
