@@ -24,7 +24,7 @@ apply plugin: "org.grails.grails-gsp"
 apply plugin: 'maven'
 apply plugin: "com.jfrog.artifactory"
 
-version "3.0.2-obi-SNAPSHOT"
+version "3.0.2-obi"
 group "org.grails.plugins"
 
 ext {
