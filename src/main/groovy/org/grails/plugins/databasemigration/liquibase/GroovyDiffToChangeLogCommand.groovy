@@ -122,12 +122,14 @@ class GroovyDiffToChangeLogCommand extends DiffToChangeLogCommand {
 
                 if (tables.size() == 1) {
                     Table table = tables[0]
-                    if (table.schema != defaultSchema || table.name.startsWith('em_')) {
-                        logger.warn "Removing table {} as not part of default schema {}", table.name, defaultSchema
+                    if (table.schema && (table.schema != defaultSchema || table.name.startsWith('em_'))) {
+                        logger.warn "Removing table {} as it is in schema {} which is not the default schema {}", table.name, table.schema,
+                                    defaultSchema
                         remove += dbObject
                         remove += dbObject.outgoingForeignKeys
                         remove += dbObject.primaryKey
                         remove += dbObject.columns
+                        remove += dbObject.indexes
                     }
 
                 }
