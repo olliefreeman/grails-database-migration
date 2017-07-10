@@ -1,21 +1,26 @@
+sudo: false
+addons:
+  apt:
+    packages:
+    - oracle-java8-installer
 language: groovy
 jdk:
 - oraclejdk8
-before_install:
-- cat /etc/hosts
-- sudo hostname "$(hostname | cut -c1-63)"
-- sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo
-  tee /etc/hosts
-- cat /etc/hosts
-before_script:
-- rm -rf build
-script: "./travis-build.sh"
+services:
+- rabbitmq
+before_cache:
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+notifications:
+  slack:
+    secure: FChGsLT3Xz0ava0Pxpuk3Qgd5EyNK+HkI5TgY3Dhaspke2egocWkgc4Mc7b+MtXdUXGV6s2vxFrqTO+/D49zN8jDPuegpvc+jF+NnrfvjlOuHnsycEOPEA6v9E+9ktrayyJ2We5UqINhEFq94Kw1a/FRzQjwCTGe0GSq3Jkb8MWfNgcMgr440OljXUFgNMXiukj93HVHJAsnq1x8AAXIDjKY1fy6FtAiAqyRhf08AWMPSLytFZ76FxdOWDkO+piYClrWmCkqkLGVJwPZZx91zx7820NK4Fk6PkmqRhYMubjVxQr7SzWA7XzvTDpNyfsPUHOARHkprxoCGq1LQuyviKIPAVKBgZfuK34rAbhMccsf0UsoEqPyr7KzjjmBXkGKBiF8qdPxampZE0ZzGW2l4+i9B9faI+WrnpyB1qSScIA0SUx6CV9G5FsMOf9obu7W7RC6TPeHzuPp3cLSdvvTqRdGMmELmWtElybGANIfzH0SVlv3AVrWXoFsd7wpGySiue2mVhxbKz/WH/rJr8Op+BGOdM4T7zQZ0LaA2kIuuN929B9ppdIabweyK48cQZuawZC5Ymchs8OjODhxy3O7ekmCqxrus9n3OTVrbqs88sUQ5WA5tzesGYkmTEJIEdeqxXLIlrDzlj+yjWCB7cwLHgrS9adqL+pPsr1F1DBmmrs=
+  email: false
+after_success:
+- ([ "$TRAVIS_BRANCH" == "master" ] || [ ! -z "$TRAVIS_TAG" ]) && [ "$TRAVIS_PULL_REQUEST" == "false" ] && ./gradlew -Partifactory_contextUrl="https://jenkins.cs.ox.ac.uk/artifactory" -Partifactory_user=$ARTIFACTORY_USER -Partifactory_apiKey=$ARTIFACTORY_KEY artifactoryPublish --info
 env:
   global:
-  - secure: kgjmeeK5L/9MjbWDvgxaZ2STRIx4UtCz0Y0gkxOcewf7YEdtRbLpmQO/hRpCEBSHu2dnqilVsHa44aaDvjl+l+RWcIteHdAM8Ocg+ZpvU+ArjkkbIZDgAScrZrSUIH7WCWDC2OI5U8UfE6cS+3dseDa7zMJ7w8gpc4xY9CBv37E=
-  - secure: EdnemSUp5Mxhgur75PK4q4Id9+FKHDqy+vglQW4kkCfOgWK07u8WZsV20ytHL2+WpHDesRvWDKoR1Lzu8Vh4O7evdrJI5s50TQM+772RUAZNbARDHCzuJ2FJmb2SJwooeecWrbOIj68SLGd7aYtydB27q4oh2njGAD6oneZJiBs=
-  - secure: SRIwnGP/pS25TUureuWApAUVeGKKa+UpRCntExKda3F+X3CVaFGXB58GZNX5QnLwEJb4tczSW6p9+/Kwo+F/2+FYN8zbURo1IyAFWylWW8t96axu5Mh0bB0ftAu51cfaxYpWWDC5tW1xtIuTsHoj3FDD9iI2mG4vJGH+ltYoOp0=
-  - secure: VbeeclxGNhp22+RF1X/UM0HKL9+SnQcTaj3qqNwRj5KmZbQCQYT8DdYepzTWBkx8t8GI2po9DdkTFxkEat2zR5tHzVqShrTSHc2HVPxZzSqf7WfuYuHKhgXm9wlea1JcLgsvP5z2zpD5mKDsJN6uvgDFlgebvCv0YLgo6p5InGI=
-  - secure: evMblW9Q4O7dr1cgRoZ8SOEJ0fJ46c88ek50dsLdd53MItGmT6DGgEGBydOamNVdAnJRi7VEFOhFUz215zeNGLJQSArCXrU8TsGfYR/eYzztNBxZXKvdDP+E65N0UkJjBeQe6AJ9IZlEkwWYgT2ZxmMvEvGe+cVHmoiTTSHm+7A=
-  - secure: mVjdLk0Xw74MEu996x5gBcqQeJpAIMkcADbQfGO9kc80eRimXqB2OP5etXF6dpCBauc4w5tGGbTxk7gFSQ4hvByh79ESwAVVInOrITSW8m9NCw+34AxZzQo9Vtwv7c8O/XJjEVuNjpQQ3A9ST6mfblzXZ7jSfz+tMYXBUwA9Ero=
-  - secure: uDOQgOVJlOG0KTAca9BqOJL/gF12jHkrLLIGbSkNHgJ9Vr/MTQ04ix4El7IriCvOTsK3Dcj7pltxPmumVjSEmc3sUGgjH9lDVMWQZKFzZt8H/57E77nsvcHktsxydY5meISe4/NffZkQfKqxdoOvRLrcBH9/ZG862VNIkMoAV2k=
+  - secure: UDkLgOwHVAgoqI8LA4kz31x/OC7QWEZLPXdMaH338MQFb8SN/BYeKWtWzXKB6TnZbwdXaTBLoqrHaaH5cKPxMyGl29yf3iXSeUKY6x0L3nUtdC15ac7Ix6QwVERJQHzWJ0qe/SGQ5JU2Dr/sUspLbtBoGyp2EReoyS0uA7l1L1QpYop0QVpBAnsDBynRIx8+t2w+tgWR1xUuaY1AVMhp0MToYEeMJy4laE/AheMtOJc7hLzDkOs0ehJtHCaxUqu2onHC0Xz4AuJrRCUdE74J97nsXY8qDTruWUNrCp2GbTqVZGB7IqvNlw4EijnNUkVh8xe4WHhgEbTzsaf9GsE7q0IcVyhxuQsNspZr2lkMk0SRuxtVMf5wQc4T/txu48Y9yUolK1jczPEdR+1LfOgtADQgoRjKXNzzjW1IYEFSxqcg1HCwDIvuTFQJTB04LQBo4gCFkAzRrby8UkbYAaimpvie74w3zZgU5PLcx/oAqaeHcAWa0WPsIqDmYk1z2ORsZAr1TDGsM5bP3MSQKY9L0dejmtEje/SQkuFP4yNAv+XbhYlA3KrYQ0u/LxLdhL5f2uzs6qfuebhFLP356D9d/NjbGMbw1DPZ7wOAGZHVFxzfuEqC3IWibvCSnmyRu9V684DICvZ7EezA0YUmK/A7fsflW4d1dDh7ohgj/Y54EyQ=
+  - secure: pFB9e1g88mNc1DDuoTM71F4drmOTYv2mvOBjsHa9dNB4u1Ged6SqkKHQHF91OkUhZsuj+iz5UReR6yn68SgIhffp/QKV2C5V9FpM/oBLInCbY290z9l1LD5ahtqKfLwJhfv9j3iHnqEuj9onPwOzUe5UPq1PNCM7hPizY5eHy4lc5WqDC3vAEfpek44/ANOkP9IRPXkT4gJBw8kNqU+CHxqK41+7MqWK3TyOcjIvGdML7Ra3w0AKB8jv20/JNXDfITcxK9K3D0nuiNpM9uO7koNFDa0Z9OsM7ccsGwYSMvyu6qEDOrZvdcm0EojISYGVwQdyN5+Oyji+QPx55idpEcYZhGJCsAimLf3nIV6mfbY2ng9cAMLqV2gN737kdcDSPrNOWFKHMvq6KfLpOnHU0MhjRIoNUjy3NIjnlJ94s0GC0GdYHhSjl3Cf83MORJ3ump4G2JZ3h762Oo5wa7B+frOvONZRAjUs5THPYlLwiobOLq6iy74YiZGRBbvxfZwRXNKddn/Ja8AYOgv0hRC7kt5X9zQ2btH4WTrhUOTlmoxbQjYV75/6DwYoUEAm6/DFSeMaLRJBwWHwlR6Hjzx2yeM2l5VKygSchg5zjMLq3NZ9r+cGMxZCSs4BpcAkzfQTLGgxw6GLqzuIqaE9KIA8H8qC/g4EEGeifwd7yPfcpJI=
