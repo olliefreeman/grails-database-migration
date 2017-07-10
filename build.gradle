@@ -134,15 +134,15 @@ configurations.testCompile.extendsFrom(configurations.compileOnly)
 tasks.artifactoryPublish.dependsOn 'install'
 
 artifactory {
-    contextUrl = "${artifactory_contextUrl}"
+    contextUrl = "https://jenkins.cs.ox.ac.uk/artifactory"
     publish {
         repository {
             repoKey = project.version.endsWith('SNAPSHOT') ? 'plugins-snapshot-local' : 'plugins-release-local'
             maven = true
 
             // The variables for these credentials should be saved in ~/.gradle/gradle.properties
-            username = "${artifactory_user}"
-            password = "${artifactory_apiKey}"
+            username = "${System.getenv('ARTIFACTORY_USER')}"
+            password = "${System.getenv('ARTIFACTORY_KEY')}"
         }
 
         defaults {

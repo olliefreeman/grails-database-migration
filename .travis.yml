@@ -6,8 +6,6 @@ addons:
 language: groovy
 jdk:
 - oraclejdk8
-services:
-- rabbitmq
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
@@ -19,7 +17,7 @@ notifications:
     secure: FChGsLT3Xz0ava0Pxpuk3Qgd5EyNK+HkI5TgY3Dhaspke2egocWkgc4Mc7b+MtXdUXGV6s2vxFrqTO+/D49zN8jDPuegpvc+jF+NnrfvjlOuHnsycEOPEA6v9E+9ktrayyJ2We5UqINhEFq94Kw1a/FRzQjwCTGe0GSq3Jkb8MWfNgcMgr440OljXUFgNMXiukj93HVHJAsnq1x8AAXIDjKY1fy6FtAiAqyRhf08AWMPSLytFZ76FxdOWDkO+piYClrWmCkqkLGVJwPZZx91zx7820NK4Fk6PkmqRhYMubjVxQr7SzWA7XzvTDpNyfsPUHOARHkprxoCGq1LQuyviKIPAVKBgZfuK34rAbhMccsf0UsoEqPyr7KzjjmBXkGKBiF8qdPxampZE0ZzGW2l4+i9B9faI+WrnpyB1qSScIA0SUx6CV9G5FsMOf9obu7W7RC6TPeHzuPp3cLSdvvTqRdGMmELmWtElybGANIfzH0SVlv3AVrWXoFsd7wpGySiue2mVhxbKz/WH/rJr8Op+BGOdM4T7zQZ0LaA2kIuuN929B9ppdIabweyK48cQZuawZC5Ymchs8OjODhxy3O7ekmCqxrus9n3OTVrbqs88sUQ5WA5tzesGYkmTEJIEdeqxXLIlrDzlj+yjWCB7cwLHgrS9adqL+pPsr1F1DBmmrs=
   email: false
 after_success:
-- ([ "$TRAVIS_BRANCH" == "master" ] || [ ! -z "$TRAVIS_TAG" ]) && [ "$TRAVIS_PULL_REQUEST" == "false" ] && ./gradlew -Partifactory_contextUrl="https://jenkins.cs.ox.ac.uk/artifactory" -Partifactory_user=$ARTIFACTORY_USER -Partifactory_apiKey=$ARTIFACTORY_KEY artifactoryPublish --info
+- ([ "$TRAVIS_BRANCH" == "master" ] || [ ! -z "$TRAVIS_TAG" ]) && [ "$TRAVIS_PULL_REQUEST" == "false" ] && ./gradlew artifactoryPublish --info
 env:
   global:
   - secure: UDkLgOwHVAgoqI8LA4kz31x/OC7QWEZLPXdMaH338MQFb8SN/BYeKWtWzXKB6TnZbwdXaTBLoqrHaaH5cKPxMyGl29yf3iXSeUKY6x0L3nUtdC15ac7Ix6QwVERJQHzWJ0qe/SGQ5JU2Dr/sUspLbtBoGyp2EReoyS0uA7l1L1QpYop0QVpBAnsDBynRIx8+t2w+tgWR1xUuaY1AVMhp0MToYEeMJy4laE/AheMtOJc7hLzDkOs0ehJtHCaxUqu2onHC0Xz4AuJrRCUdE74J97nsXY8qDTruWUNrCp2GbTqVZGB7IqvNlw4EijnNUkVh8xe4WHhgEbTzsaf9GsE7q0IcVyhxuQsNspZr2lkMk0SRuxtVMf5wQc4T/txu48Y9yUolK1jczPEdR+1LfOgtADQgoRjKXNzzjW1IYEFSxqcg1HCwDIvuTFQJTB04LQBo4gCFkAzRrby8UkbYAaimpvie74w3zZgU5PLcx/oAqaeHcAWa0WPsIqDmYk1z2ORsZAr1TDGsM5bP3MSQKY9L0dejmtEje/SQkuFP4yNAv+XbhYlA3KrYQ0u/LxLdhL5f2uzs6qfuebhFLP356D9d/NjbGMbw1DPZ7wOAGZHVFxzfuEqC3IWibvCSnmyRu9V684DICvZ7EezA0YUmK/A7fsflW4d1dDh7ohgj/Y54EyQ=
