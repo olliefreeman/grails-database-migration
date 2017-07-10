@@ -4,7 +4,15 @@
 
 ## Branches
 
-The current master branch is for 2.x versions of the plugin compatible with Grails 3. There is a 1.x branch for on-going maintenance of 1.x versions of the plugin compatible with Grails 2. Please submit any pull requests to the appropriate branch. Changes to the 1.x branch will be merged into the master branch if appropriate.
+**master** Version of the plugin compatible with Grails 3 and Hibernate 5.
+
+**2.x**. Version of the plugin compatible with Grails 3 and Hiberante 4.
+
+**1.x** There is a 1.x branch for on-going maintenance of 1.x versions of the plugin compatible with Grails 2. 
+
+Please submit any pull requests to the appropriate branch.  
+
+Changes to the 1.x branch or 2.x branch will be merged into the master branch if appropriate.
 
 ## Overview
 
@@ -20,5 +28,10 @@ One popular approach is to have a root changelog named changlog.groovy (or chang
 
 ## Documentation
 * Grails 2: http://grails-plugins.github.io/grails-database-migration/docs/manual/index.html
-* Grails 3: http://grails-plugins.github.io/grails-database-migration/latest/index.html
+* Grails 3 (Hibernate 4): http://grails-plugins.github.io/grails-database-migration/2.0.x/index.html
+* Grails 3 (Hibernate 5): http://grails-plugins.github.io/grails-database-migration/3.0.x/index.html
 
+
+## Package distribution
+
+Software is distrbuted in [Bintray](https://bintray.com/grails/plugins/database-migration)

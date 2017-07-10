@@ -24,7 +24,7 @@ apply plugin: "org.grails.grails-gsp"
 apply plugin: 'maven'
 apply plugin: "com.jfrog.artifactory"
 
-version "3.0.2-obi"
+version "3.0.3-obi"
 group "org.grails.plugins"
 
 ext {
@@ -61,7 +61,7 @@ dependencies {
         exclude group: 'org.hibernate', module: 'hibernate-envers'
         exclude group: 'org.liquibase', module: 'liquibase-core'
     }
-    compileOnly 'org.hibernate:hibernate-core:5.1.1.Final'
+    compileOnly "org.hibernate:hibernate-core:$hibernateVersion"
 
     compileOnly 'org.springframework.boot:spring-boot-starter-logging'
     compileOnly "org.springframework.boot:spring-boot-starter-actuator"
@@ -79,7 +79,7 @@ dependencies {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
 
-    documentation "org.codehaus.groovy:groovy-all:2.4.7"
+    documentation "org.codehaus.groovy:groovy-all:2.4.11"
 }
 
 /*
@@ -134,15 +134,15 @@ configurations.testCompile.extendsFrom(configurations.compileOnly)
 tasks.artifactoryPublish.dependsOn 'install'
 
 artifactory {
-    contextUrl = "${artifactory_contextUrl}"
+    contextUrl = "https://jenkins.cs.ox.ac.uk/artifactory"
     publish {
         repository {
             repoKey = project.version.endsWith('SNAPSHOT') ? 'plugins-snapshot-local' : 'plugins-release-local'
             maven = true
 
             // The variables for these credentials should be saved in ~/.gradle/gradle.properties
-            username = "${artifactory_user}"
-            password = "${artifactory_apiKey}"
+            username = "${System.getenv('ARTIFACTORY_USER')}"
+            password = "${System.getenv('ARTIFACTORY_KEY')}"
         }
 
         defaults {
